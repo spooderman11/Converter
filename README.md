@@ -2,7 +2,7 @@
 
 A Python script that converts image or video files into GIF format using the `imageio` package.
 
-## CHECK THE RELEASES FOR THE COMPILED EXE VERSION!!
+### CHECK THE RELEASES FOR THE COMPILED EXE VERSION!!
 
 **Note:** Before running the program, please consider the following:
 
