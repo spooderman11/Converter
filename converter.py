@@ -142,8 +142,10 @@ if duration == "":
 else:
     writer = imageio.get_writer("files/" + output_file, duration=float(duration)/1000)
 
-for i,im in enumerate(reader):
-    sys.stdout.write('\r' + "Converting... " + str(i) + " frames. Do not panic if it looks like its stuck. (note: Interupting the process will result in a corrupt gif)")
+total_frames = reader.count_frames()
+for i, im in enumerate(reader):
+    progress = (i + 1) / total_frames * 100
+    sys.stdout.write('\r' + f"Converting... {i+1}/{total_frames-1} frames ({progress:.2f}%)")
     sys.stdout.flush()
     writer.append_data(im)
 
