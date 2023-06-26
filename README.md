@@ -2,6 +2,14 @@
 
 A Python script that converts image or video files into GIF format using the `imageio` package.
 
+**Note:** Before running the program, please consider the following:
+
+- Extraction: It is recommended to extract the program files to a dedicated folder to keep them organized.
+
+- Dependencies: Make sure the `imageio` package is installed. If not, the script will prompt you to install it.
+
+- Interference: Check for any conflicting programs or processes that may interfere with the conversion process, such as antivirus software or file locks.
+
 Features:
 - Supports conversion of both image and video files to GIF.
 - Utilizes the `imageio` library for efficient and reliable file handling.
@@ -10,8 +18,6 @@ Features:
 - Provides the path to the generated GIF file for easy access.
 
 Potential Flaws:
-- Dependencies: Requires the `imageio` package to be installed.
-- Installation Prompt: May interrupt the user experience with installation prompts if the required package is missing.
 - Limited Error Handling: The script relies on default error handling, which may not provide detailed error messages in case of failures.
 - Command Line Interface: Does not have a graphical user interface (GUI) and operates through the command line interface (CLI), which may not be as user-friendly for some individuals.
 - Lack of Customization Options: Does not offer advanced customization options for GIF creation, such as frame rate adjustment or image/video editing.
