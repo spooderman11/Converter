@@ -23,8 +23,7 @@
     If you have any questions, feel free to contact me on discord: @copyrightclaim.
 """
 
-
-import sys, subprocess, platform, time, os
+import sys, subprocess, platform, time, os, imageio
 
 class ConsoleClear:
     def clear(self):
@@ -34,124 +33,55 @@ class ConsoleClear:
             subprocess.call("clear", shell=True)
 
 try:
-    import imageio
-except ImportError:
-    print("Package(s) missing, would you like to install them? (y/n)")
-    install = input("Install?(y/n): ")
-    if install == "y":
-        if platform.system() == "Windows":
-            subprocess.call("pip install imageio", shell=True)
-            subprocess.call("pip install imageio[ffmpeg]", shell=True)
-            ConsoleClear().clear()
-            try:
-                import imageio
-                pass
-            except ImportError:
-                print("Error: Package(s) not installed, please install them manually")
-                sys.exit()
-        else:
-            subprocess.call("pip3 install imageio", shell=True)
-            subprocess.call("pip3 install imageio[ffmpeg]", shell=True)
-            ConsoleClear().clear()
-            try:
-                import imageio
-                pass
-            except ImportError:
-                print("Error: Package(s) not installed, please install them manually")
-                sys.exit()
-    else:
-        sys.exit()
+    imageio.plugins.ffmpeg.download()
+except:
+    pass
 
 ConsoleClear().clear()
 print("Welcome to spoodermans image/video to gif converter!")
-
 time.sleep(3)
-
 ConsoleClear().clear()
 
 try:
-    print("checking for PATH...")
-    if not os.path.exists("files"):
-        os.mkdir("files")
-        print("PATH not found, PATH has been created, please put your files in the 'files' folder")
-        time.sleep(3)
-        sys.exit()
-    else:
-        print("PATH found!")
-        ConsoleClear().clear()
-        pass    
-except Exception as e:
-    print("Error: ", e)
-    sys.exit()
-
-
-print("Please enter the file name that you put in the 'files' folder")
-print("Example: 'spooderman.jpg' or 'spooderman.mp4'")
-try:
-    input_file = input("File name: ")
-except KeyboardInterrupt:
-    ConsoleClear().clear()
-    print("\nKeyboardInterrupt, exiting...")
-    sys.exit()
-
-ConsoleClear().clear()
-
-print("Please enter the name of the gif you want to create")
-print("Example: 'spooderman.gif'")
-try:
-    output_file = input("File name: ")
-except KeyboardInterrupt:
-    ConsoleClear().clear()
-    print("\nKeyboardInterrupt, exiting...")
-    sys.exit()
-
-# output file exists check
-try:
-    open("files/" + output_file)
-    ConsoleClear().clear()
-    print("Error: File already exists, please choose a different name")
-    sys.exit()
-except FileNotFoundError:
+    os.mkdir("files")
+except:
     pass
 
-# extension check
-if output_file[-4:] != ".gif":
-    ConsoleClear().clear()
+input_file = input("Please enter the name of the image/video file you want to convert (including extension): ")
+if not os.path.exists(f"files/{input_file}"):
+    print("Error: File not found, please make sure the file is in the 'files' folder")
+    sys.exit()
+
+output_file = input("Please enter the name of the output gif file (including .gif extension): ")
+if os.path.exists(f"files/{output_file}"):
+    print("Error: File already exists, please choose a different name")
+    sys.exit()
+elif output_file[-4:] != ".gif":
     print("Error: File extension is not .gif, please add the .gif extension")
     sys.exit()
 
+duration = input("Please enter the duration of each frame in milliseconds (if its a video, otherwise leave blank) (1000 = 1 second): ")
+
 ConsoleClear().clear()
 
 try:
-    duration = input("Please enter the duration of each frame in milliseconds (if its a video, otherwise leave blank) (1000 = 1 second): ")
-except KeyboardInterrupt:
+    reader = imageio.get_reader(f"files/{input_file}")
+    if duration == "":
+        writer = imageio.get_writer(f"files/{output_file}")
+    else:
+        writer = imageio.get_writer(f"files/{output_file}", duration=float(duration)/1000)
+    total_frames = reader.count_frames()
+    for i, im in enumerate(reader):
+        progress = (i + 1) / total_frames * 100
+        sys.stdout.write('\r' + f"Converting... {i+1}/{total_frames} frames ({progress:.2f}%)")
+        sys.stdout.flush()
+        writer.append_data(im)
+    writer.close()
+    print("\nDone! Please check the following path for your gif: " + f"files/{output_file}")
+    time.sleep(3)
     ConsoleClear().clear()
-    print("\nKeyboardInterrupt, exiting...")
-    sys.exit()
-
-ConsoleClear().clear()
-
-try:
-    reader = imageio.get_reader("files/" + input_file)
+    print("Thank you for using spoodermans image/video to gif converter! You can now press the little enter key to exit")
+    input("Press the little tiny enter key to exit")
 except Exception as e:
     print("Error: ", e)
     sys.exit()
-
-if duration == "":
-    writer = imageio.get_writer("files/" + output_file)
-else:
-    writer = imageio.get_writer("files/" + output_file, duration=float(duration)/1000)
-
-total_frames = reader.count_frames()
-for i, im in enumerate(reader):
-    progress = (i + 1) / total_frames * 100
-    sys.stdout.write('\r' + f"Converting... {i+1}/{total_frames-1} frames ({progress:.2f}%)")
-    sys.stdout.flush()
-    writer.append_data(im)
-
-writer.close()
-print("\nDone! Please check the following path for your gif: " + "files/" + output_file)
-time.sleep(3)
-ConsoleClear().clear()
-print("Thank you for using spoodermans image/video to gif converter! You can now press the little enter key to exit")
-input("Press the little tiny enter key to exit")
